@@ -73,9 +73,9 @@ async function handleFormSubmit(e) {
     
     const id = document.getElementById('campaign-id').value;
     const name = document.getElementById('name').value;
-    const eventType = document.getElementById('eventType').value;
-    const replyUrl = document.getElementById('replyUrl').value;
-    const replyToken = document.getElementById('replyToken').value;
+    const event_type = document.getElementById('eventType').value;
+    const reply_url = document.getElementById('replyUrl').value;
+    const reply_token = document.getElementById('replyToken').value;
     
     // Gather mappings
     const mappings = [];
@@ -85,7 +85,8 @@ async function handleFormSubmit(e) {
         if (path && varName) mappings.push({ path, name: varName });
     });
 
-    const payload = { id, name, eventType, replyUrl, replyToken, mappings };
+    // Use snake_case to match backend mapping logic
+    const payload = { id, name, event_type, reply_url, reply_token, mappings };
 
     try {
         const res = await fetch(API_URL, {
@@ -136,9 +137,9 @@ function renderDashboard() {
         <div class="card campaign-card shadow">
             <h3>${c.name}</h3>
             <div class="campaign-meta">
-                <div><strong>Event:</strong> ${c.eventType}</div>
+                <div><strong>Event:</strong> ${c.event_type}</div>
                 <div><strong>Status:</strong> <span style="color: var(--success)">${c.status}</span></div>
-                <div><strong>Last Triggered:</strong> ${c.lastTriggered ? new Date(c.lastTriggered).toLocaleString() : 'Never'}</div>
+                <div><strong>Last Triggered:</strong> ${c.last_triggered ? new Date(c.last_triggered).toLocaleString() : 'Never'}</div>
             </div>
             <div class="campaign-actions">
                 <button class="btn-text" onclick="editCampaign('${c.id}')">Edit</button>
@@ -149,7 +150,7 @@ function renderDashboard() {
 }
 
 function showSuccess(campaign) {
-    const url = `${WEBHOOK_BASE_URL}?event=${campaign.eventType}`;
+    const url = `${WEBHOOK_BASE_URL}?event=${campaign.event_type}`;
     document.getElementById('generated-url').textContent = url;
     document.getElementById('generated-url').dataset.campaignId = campaign.id;
     document.getElementById('test-result').classList.add('hidden');
@@ -162,9 +163,9 @@ function editCampaign(id) {
     
     document.getElementById('campaign-id').value = campaign.id;
     document.getElementById('name').value = campaign.name;
-    document.getElementById('eventType').value = campaign.eventType;
-    document.getElementById('replyUrl').value = campaign.replyUrl;
-    document.getElementById('replyToken').value = campaign.replyToken;
+    document.getElementById('eventType').value = campaign.event_type;
+    document.getElementById('replyUrl').value = campaign.reply_url;
+    document.getElementById('replyToken').value = campaign.reply_token;
     
     const container = document.getElementById('mapping-container');
     container.innerHTML = '';
