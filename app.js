@@ -61,16 +61,23 @@ function showView(viewName) {
 async function fetchCampaigns() {
     try {
         const res = await fetch(API_URL);
-        const data = await res.json();
+        const contentType = res.headers.get("content-type");
         
-        if (res.ok) {
-            campaigns = data;
-            renderDashboard();
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await res.json();
+            if (res.ok) {
+                campaigns = data;
+                renderDashboard();
+            } else {
+                showToast(`Server Error: ${data.error || res.status}`, 'danger');
+            }
         } else {
-            showToast(`Error: ${data.error || 'Failed to load campaigns'}`, 'danger');
+            const text = await res.text();
+            showToast(`Critical Error: Received HTML instead of JSON. (Status: ${res.status})`, 'danger');
+            console.error('Non-JSON response:', text);
         }
     } catch (err) {
-        showToast(`System Error: ${err.message}`, 'danger');
+        showToast(`Connection Error: ${err.message}`, 'danger');
     }
 }
 
