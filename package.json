@@ -1,0 +1,10 @@
+{
+  "name": "shopify-webhook-manager",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Building...'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
