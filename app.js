@@ -61,10 +61,16 @@ function showView(viewName) {
 async function fetchCampaigns() {
     try {
         const res = await fetch(API_URL);
-        campaigns = await res.json();
-        renderDashboard();
+        const data = await res.json();
+        
+        if (res.ok) {
+            campaigns = data;
+            renderDashboard();
+        } else {
+            showToast(`Error: ${data.error || 'Failed to load campaigns'}`, 'danger');
+        }
     } catch (err) {
-        showToast('Error loading campaigns', 'danger');
+        showToast(`System Error: ${err.message}`, 'danger');
     }
 }
 
